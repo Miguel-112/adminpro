@@ -13,6 +13,8 @@ import { ProgressComponent } from './pages/progress/progress.component';
 import { Grafica1Component } from './pages/grafica1/grafica1.component';
 import { AppRoutingModule } from './app-routing.module';
 import { LoginComponent } from './auth/login/login.component';
+import { PagesComponent } from './pages/pages.component';
+
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { LoginComponent } from './auth/login/login.component';
     SidebarComponent,
     ProgressComponent,
     Grafica1Component,
-    LoginComponent
+    LoginComponent,
+    PagesComponent,
+   
   ],
   imports: [
     BrowserModule,
