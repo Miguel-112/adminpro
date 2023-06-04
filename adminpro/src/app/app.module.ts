@@ -10,11 +10,13 @@ import { AuthModuleTsModule } from './auth/auth.module.ts.module';
 
 
 
+
 @NgModule({
   declarations: [
    
     AppComponent,
-    NopagefoundComponent
+    NopagefoundComponent,
+   
 
 
   ],
