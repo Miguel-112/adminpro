@@ -1,4 +1,4 @@
-import { Injectable,NgZone } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
 
@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { LoginForm } from '../interfaces/login-form.interface';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { Usuairo } from '../models/usuario.model';
 
 const base_url = environment.base_url;
 
@@ -19,8 +20,9 @@ declare const gapi: any;
   providedIn: 'root'
 })
 export class UsuarioService {
-  
+
   public auth2: any;
+  public usuario!: Usuairo;
   constructor(private http: HttpClient,
     private router: Router,
     private ngZone: NgZone) {
@@ -28,11 +30,18 @@ export class UsuarioService {
     this.logout = this.logout.bind(this);
   }
 
+ get token(): string {
+    return localStorage.getItem('token') || '';
+  }
+
+  get uid():string {
+    return this.usuario.uid || '';
+  }
 
 
   googleInit() {
 
-    return new Promise<void>( resolve => {
+    return new Promise<void>(resolve => {
       gapi.load('auth2', () => {
         this.auth2 = gapi.auth2.init({
           client_id: '616115338227-aio6khd2tv3qt6mq1mlskpav1868145r.apps.googleusercontent.com',
@@ -53,37 +62,41 @@ export class UsuarioService {
     // this.auth2.signOut().then(() => {
 
     //   this.ngZone.run(() => {
-        
+
     //   })
     // });
 
   }
-
-
+validarToken(): Observable<boolean> {
   
 
- 
-
-
-
-
-  validarToken(): Observable<boolean> {
-
-    const token = localStorage.getItem('token') || '';
-
-    return this.http.get(`${base_url}/login/renew`, {
-      headers: {
-        'x-token': token
-      }
-    }).pipe(
-      tap((resp: any) => {
-        localStorage.setItem('token', resp.token);
-      }),
-      map(resp => true),
-      catchError(error => of(false))
-    );
-
-  }
+ return new Observable<boolean>((observer) => {
+    this.ngZone.run(() => {
+      this.http.get(`${base_url}/login/renew`, {
+        headers: {
+          'x-token': this.token,
+        }
+      }).subscribe(
+        (resp: any) => {
+          const { email, google, nombre, roles, img ='' , uid } = resp.usuario;
+          this.usuario = new Usuairo(nombre, email, '', img, google, roles, uid);
+          console.log(this.usuario);
+          
+        //  this.usuario.imprimirUsuario()
+          
+          localStorage.setItem('token', resp.token);
+          
+          observer.next(true);
+          observer.complete();
+        },
+        (error) => {
+          observer.next(false);
+          observer.complete();
+        }
+      );
+    });
+  });
+}
 
   CrearUsuario(formData: registerForm) {
     return this.http.post(`${base_url}/usuarios`, formData)
@@ -93,6 +106,21 @@ export class UsuarioService {
           localStorage.setItem('token', resp.token);
         })
       )
+  }
+
+  actualizarPerfil( data: { email: string, nombre: string, roles:string } ) {
+
+    data = {
+      ...data,
+      roles: this.usuario.roles || ''
+    };
+
+    return this.http.put(`${ base_url }/usuarios/${this.uid}`, data, {
+      headers: {
+        'x-token': this.token
+      }
+    });
+
   }
 
   login(formData: LoginForm) {

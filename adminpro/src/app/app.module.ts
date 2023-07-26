@@ -24,7 +24,8 @@ import { AuthModuleTsModule } from './auth/auth.module.ts.module';
     BrowserModule,
     AppRoutingModule,
     PagesModule,
-    AuthModuleTsModule
+    AuthModuleTsModule,
+    PagesModule
     
   ],
   providers: [],
