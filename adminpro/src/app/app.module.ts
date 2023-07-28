@@ -6,7 +6,10 @@ import { AppComponent } from './app.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { NopagefoundComponent } from './nopagefound/nopagefound.component';
 import { LoginComponent } from './auth/login/login.component';
-import { AuthModuleTsModule } from './auth/auth.module.ts.module';
+ import { AuthModuleTsModule } from './auth/auth.module.ts.module';
+
+
+
 
 
 
