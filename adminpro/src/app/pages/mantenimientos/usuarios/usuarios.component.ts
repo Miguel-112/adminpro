@@ -5,6 +5,7 @@ import { BusquedasService } from 'src/app/services/busquedas.service';
 import { ModalImagenService } from 'src/app/services/modal-imagen.service';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Subscription, delay, pipe } from 'rxjs';
+import { Hospital } from 'src/app/models/hospital.model';
 
 @Component({
   selector: 'app-usuarios',
@@ -84,17 +85,20 @@ export class UsuariosComponent implements OnDestroy {
 
 
   buscar(termino: string) {
-
     if (termino.length === 0) {
       this.usuarios = this.usuariosTemp;
     }
-
+  
     this.busquedasServices.buscar('usuarios', termino)
-      .subscribe(resp => {
-        this.usuarios = resp;
+      .subscribe((resp: Usuairo[] | Hospital[]) => {
+        if (Array.isArray(resp) && resp.length > 0 && resp[0] instanceof Usuairo) {
+          this.usuarios = resp as Usuairo[];
+        } else {
+          return;
+        }
       });
   }
-
+  
 
   eliminarUsuario(usuario: Usuairo) {
 
@@ -142,7 +146,7 @@ export class UsuariosComponent implements OnDestroy {
 
 this.usuarioService.guardarUsuario(usuario)
   .subscribe(resp =>{
-     console.log(resp);
+     
   } )
 
   }
