@@ -1,4 +1,4 @@
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree, CanLoad, Route, UrlSegment } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UsuarioService } from '../services/usuario.service';
@@ -6,11 +6,23 @@ import {tap,map} from 'rxjs/operators';
 
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthGuard implements CanActivate,CanLoad {
   constructor(
     private router: Router,
     private usuarioService: UsuarioService
   ) {}
+
+
+  canLoad(route: Route, segments: UrlSegment[]): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    return this.usuarioService.validarToken()
+    .pipe(
+      tap( estaAutenticado =>  {
+        if ( !estaAutenticado ) {
+          this.router.navigateByUrl('/login');
+        }
+      })
+    );
+  }
 
   canActivate(
     route: ActivatedRouteSnapshot,
