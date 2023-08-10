@@ -36,6 +36,9 @@
 
 }
 
+.w75{
+    width: 75px;  
+}
 
 .oculto{
     display:none;

@@ -15,11 +15,17 @@ export class SidebarComponent {
   public imgUrl='';
   menuItems: any[]=[];
 
-  constructor(private sidebarService:SidebarService,
+  ngOnInit(): void {
+    
+    this.menuItems=this.sidebarService.menu;
+  }
+
+  constructor(public sidebarService:SidebarService,
     private usuarioService: UsuarioService)
 {
+
+
   
-  this.menuItems=sidebarService.menu;
 
   this.usuario= usuarioService.usuario;
 }

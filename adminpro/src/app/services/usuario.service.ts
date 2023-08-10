@@ -51,6 +51,11 @@ export class UsuarioService {
     }
 }
 
+get roles(): 'ADMIN_ROLE' | 'USER_ROLE' | undefined {
+  return this.usuario.roles;
+}
+
+
   
 
 
@@ -73,6 +78,7 @@ export class UsuarioService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('menu');
     this.router.navigateByUrl('/login');
     // this.auth2.signOut().then(() => {
 
@@ -99,7 +105,7 @@ validarToken(): Observable<boolean> {
           
         //  this.usuario.imprimirUsuario()
           
-          localStorage.setItem('token', resp.token);
+        this.guardarLocalStorage(resp.token,resp.menu);
           
           observer.next(true);
           observer.complete();
@@ -118,7 +124,8 @@ validarToken(): Observable<boolean> {
       .pipe(
         tap((resp: any) => {
           console.log(resp);
-          localStorage.setItem('token', resp.token);
+          this.guardarLocalStorage(resp.token,resp.menu);
+          
         })
       )
   }
@@ -139,18 +146,25 @@ validarToken(): Observable<boolean> {
       .pipe(
         tap((resp: any) => {
           console.log(resp);
-          localStorage.setItem('token', resp.token);
+          this.guardarLocalStorage(resp.token,resp.menu);
         })
       )
   }
 
+
+  guardarLocalStorage( token: string, menu: any ) {
+
+    localStorage.setItem('token', token );
+    localStorage.setItem('menu', JSON.stringify(menu) );
+
+  }
 
   loginGoogle(token: string) {
 
     return this.http.post(`${base_url}/login/google`, { token })
       .pipe(
         tap((resp: any) => {
-          localStorage.setItem('token', resp.token)
+          this.guardarLocalStorage(resp.token,resp.menu);
         })
       );
 

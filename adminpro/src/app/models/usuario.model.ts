@@ -10,7 +10,7 @@ export class Usuairo {
         public password?: string,
         public img?: string,
         public google?: boolean,
-        public roles?: string,
+        public roles?: 'ADMIN_ROLE' | 'USER_ROLE',
         public uid?: string,
     ) { }
 
